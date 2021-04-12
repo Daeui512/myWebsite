@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -14,11 +15,13 @@
         <input type="text" name="title" placeholder="제목" required="required">
       </p>
     </div>
+    
     <div>
-      <p>작성자 : 
-        <input type="text" name="userid" placeholder="작성자" required="required">
+      <p>작성자 : ${userid }
+        <input type="hidden" name="userid" value="${userid }" placeholder="작성자" required="required">
       </p>
     </div>
+    
     <div>
       <textarea rows="20" cols="120" name="content" placeholder="내용 입력" 
       required="required"></textarea>

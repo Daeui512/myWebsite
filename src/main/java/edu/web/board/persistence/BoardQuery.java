@@ -32,4 +32,17 @@ public interface BoardQuery {
 	//게시글 삭제
 	//DELETE FROM BOARD WHERE BNO = ?
 	public static final String SQL_DELETE = "DELETE FROM " + TABLE_NAME + " WHERE " + COL_BNO + " = ?";
+	
+	//게시글 페이징
+	//SELECT B.BNO, B.TITLE, B.CONTENT, B.USERID, B.CDATE FROM (
+    //SELECT ROWNUM AS RN, A.* FROM (
+    //        SELECT * FROM BOARD ORDER BY BNO DESC
+    //    )A
+    // )B WHERE RN BETWEEN ? AND ?;
+	public static final String SQL_SELECT_PAGESCOPE = 
+			"SELECT B." + COL_BNO + ", B." + COL_TITLE +", B." + COL_CONTENT + ", B." + COL_USERID + ", B." + COL_CDATE 
+			+ " FROM ( SELECT ROWNUM AS RN, A.* FROM ( SELECT * FROM " + TABLE_NAME + " ORDER BY " + COL_BNO + " DESC "
+			+ ")A" + ")B WHERE RN BETWEEN ? AND ?";
+	// SELECT COUNT(*) TOTAL_CNT FROM BOARD;
+	public static final String SQL_TOTAL_CNT = "SELECT COUNT(*) TOTAL_CNT FROM " + TABLE_NAME;
 }

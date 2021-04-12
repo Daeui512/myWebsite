@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import edu.web.board.domain.BoardVO;
+import edu.web.board.util.PageCriteria;
 import edu.web.dbcp.connmgr.ConnMgr;
 
 public class BoardDAOImple implements BoardDAO,BoardQuery{
@@ -144,5 +145,63 @@ public class BoardDAOImple implements BoardDAO,BoardQuery{
 		}
 		
 		return result;
+	}
+
+	@Override
+	public List<BoardVO> select(PageCriteria c) {
+		List<BoardVO> list = new ArrayList<BoardVO>();
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		BoardVO vo = null;
+		int bno;
+		String title, content, userid, cdate;
+		
+		try {
+			conn = ConnMgr.getConnection();
+			pstmt = conn.prepareStatement(SQL_SELECT_PAGESCOPE);
+			// 1 ~ 5, 6 ~ 10, 11 ~ 15
+			pstmt.setInt(1, c.getStart());
+			pstmt.setInt(2, c.getEnd());
+			rs = pstmt.executeQuery();
+			
+			while (rs.next()) {
+				bno = rs.getInt(COL_BNO);
+				title = rs.getString(COL_TITLE);
+				content = rs.getString(COL_CONTENT);
+				userid = rs.getString(COL_USERID);
+				cdate = rs.getString(COL_CDATE);
+				vo = new BoardVO(bno, title, content, userid, cdate);
+				list.add(vo);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnMgr.close(conn, pstmt, rs);
+		}
+		return list;
+	}
+
+	@Override
+	public int getTotatlNums() {
+		int cnt = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		
+		try {
+			conn = ConnMgr.getConnection();
+			pstmt = conn.prepareStatement(SQL_TOTAL_CNT);
+			
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				cnt = rs.getInt("TOTAL_CNT");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			ConnMgr.close(conn, pstmt, rs);
+		}
+		return cnt;
 	}
 }
